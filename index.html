@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Directory</title>
+</head>
+<body>
+    <h1>User Directory</h1>
+    <form id="userForm">
+        <input type="text" id="studentCode" placeholder="Student Code" required>
+        <input type="text" id="firstName" placeholder="First Name" required>
+        <input type="text" id="lastName" placeholder="Last Name" required>
+        <input type="number" id="age" placeholder="Age" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <button type="submit">Add User</button>
+    </form>
+    <script>
+        document.getElementById('userForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const user = {
+                studentCode: document.getElementById('studentCode').value,
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                age: parseInt(document.getElementById('age').value),
+                email: document.getElementById('email').value
+            };
+            await fetch('http://expressforvisawa:3000/api/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(user)
+            });
+            alert('User added!');
+            document.getElementById('userForm').reset();
+        });
+    </script>
+</body>
+</html>
+
