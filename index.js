@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors'); // Import CORS for cross-origin requests
 
 const app = express();
 const port = 3000;
@@ -22,6 +23,8 @@ const Student = mongoose.model('Student', StudentSchema);
 
 // Middleware
 app.use(express.json());
+app.use(cors()); // Enable CORS
+app.use(express.static('public'));
 
 // API endpoints
 app.get('/api/students', async (req, res) => {
@@ -35,7 +38,23 @@ app.post('/api/students', async (req, res) => {
   res.status(201).json(student);
 });
 
+app.put('/api/students/:id', async (req, res) => {
+  const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  if (!student) return res.status(404).send('Student not found');
+  res.json(student);
+});
+
+app.delete('/api/students/:id', async (req, res) => {
+  const result = await Student.findByIdAndDelete(req.params.id);
+  if (!result) return res.status(404).send('Student not found');
+  res.json({ message: 'Student deleted' });
+});
+
+// Serve the index.html file from the public directory
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
 app.listen(port, () => {
   console.log(`Express app listening at http://localhost:${port}`);
 });
-
